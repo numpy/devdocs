@@ -1,0 +1,1251 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The numpy.ma module &#8212; NumPy v2.4.dev0 Manual</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/numpy.css?v=e8edb4a7" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=e1f59f4e"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/maskedarray.generic';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://numpy.org/doc/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'devdocs';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constants of the numpy.ma module" href="maskedarray.baseclass.html" />
+    <link rel="prev" title="Masked arrays" href="maskedarray.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.4.dev0" />
+    <meta name="docbuild:last-update" content="Oct 11, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/numpylogo.svg" class="logo__image only-light" alt="NumPy v2.4.dev0 Manual - Home"/>
+    <img src="../_static/numpylogo_dark.svg" class="logo__image only-dark pst-js-only" alt="NumPy v2.4.dev0 Manual - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../building/index.html">
+    Building from source
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Release notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/numpy-tutorials/">
+    Learn
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://numpy.org/neps">
+    NEPs
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/numpy/numpy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../building/index.html">
+    Building from source
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Release notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/numpy-tutorials/">
+    Learn
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/neps">
+    NEPs
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/numpy/numpy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_structure.html">NumPy’s module structure</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="arrays.html">Array objects</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arrays.ndarray.html">The N-dimensional array (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.scalars.html">Scalars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.dtypes.html">Data type objects (<code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.promotion.html">Data type promotion in NumPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.nditer.html">Iterating over arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.classes.html">Standard array subclasses</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="maskedarray.html">Masked arrays</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="maskedarray.baseclass.html">Constants of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="routines.ma.html">Masked array operations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.interface.html">The array interface protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.datetime.html">Datetimes and timedeltas</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ufuncs.html">Universal functions (<code class="xref py py-class docutils literal notranslate"><span class="pre">ufunc</span></code>)</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="routines.html">Routines and objects by topic</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="typing.html">Typing (<code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.typing</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distutils.html">Packaging</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="c-api/index.html">NumPy C-API</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="array_api.html">Array API standard compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simd/index.html">CPU/SIMD optimizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thread_safety.html">Thread Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_state.html">Global Configuration Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">NumPy security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distutils_status_migration.html">Status of <code class="docutils literal notranslate"><span class="pre">numpy.distutils</span></code> and migration advice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distutils_guide.html"><code class="docutils literal notranslate"><span class="pre">numpy.distutils</span></code> user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swig.html">NumPy and SWIG</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">NumPy reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="arrays.html" class="nav-link">Array objects</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="maskedarray.html" class="nav-link">Masked arrays</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="the-numpy-ma-module">
+<span id="module-numpy.ma"></span><span id="maskedarray-generic"></span><h1>The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module<a class="headerlink" href="#the-numpy-ma-module" title="Link to this heading">#</a></h1>
+<section id="rationale">
+<h2>Rationale<a class="headerlink" href="#rationale" title="Link to this heading">#</a></h2>
+<p>Masked arrays are arrays that may have missing or invalid entries.
+The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module provides a nearly work-alike replacement for numpy
+that supports data arrays with masks.</p>
+</section>
+<section id="what-is-a-masked-array">
+<h2>What is a masked array?<a class="headerlink" href="#what-is-a-masked-array" title="Link to this heading">#</a></h2>
+<p>In many circumstances, datasets can be incomplete or tainted by the presence
+of invalid data. For example, a sensor may have failed to record a data, or
+recorded an invalid value. The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module provides a convenient
+way to address this issue, by introducing masked arrays.</p>
+<p>A masked array is the combination of a standard <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> and a
+mask. A mask is either <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a>, indicating that no value of the
+associated array is invalid, or an array of booleans that determines for each
+element of the associated array whether the value is valid or not. When an
+element of the mask is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the corresponding element of the associated
+array is valid and is said to be unmasked. When an element of the mask is
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, the corresponding element of the associated array is said to be
+masked (invalid).</p>
+<p>The package ensures that masked entries are not used in computations.</p>
+<div class="try_examples_outer_container docutils container" id="a61da7bd-4b13-4d86-b2b0-2237f80722f9">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('a61da7bd-4b13-4d86-b2b0-2237f80722f9','6433b706-eea7-4250-aabe-857b5dc82ab1','0dc3a26f-000e-4f94-9dac-a8bde76747f8','../lite/tree/../notebooks/index.html?path=7b442d2b_b369_41fb_9ca4_bbca0ac14fbc.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<p>As an illustration, let’s consider the following dataset:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We wish to mark the fourth entry as invalid. The easiest is to create a masked
+array:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We can now compute the mean of the dataset, without taking the invalid data
+into account:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="go">2.75</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="0dc3a26f-000e-4f94-9dac-a8bde76747f8" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('a61da7bd-4b13-4d86-b2b0-2237f80722f9','0dc3a26f-000e-4f94-9dac-a8bde76747f8')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('a61da7bd-4b13-4d86-b2b0-2237f80722f9','0dc3a26f-000e-4f94-9dac-a8bde76747f8')">Open In Tab</button></div><div id="6433b706-eea7-4250-aabe-857b5dc82ab1" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+<section id="id1">
+<h2>The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>The main feature of the <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module is the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray" title="numpy.ma.MaskedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaskedArray</span></code></a>
+class, which is a subclass of <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The class, its
+attributes and methods are described in more details in the
+<a class="reference internal" href="maskedarray.baseclass.html#maskedarray-baseclass"><span class="std std-ref">MaskedArray class</span></a> section.</p>
+<div class="try_examples_outer_container docutils container" id="5dad7233-58f9-4b3b-863e-79477d4f425e">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('5dad7233-58f9-4b3b-863e-79477d4f425e','bc9da5ce-5a54-40e4-9a13-9b9a25c3f4a3','800b9e21-6d87-42d1-b6c4-2c5d77bc46db','../lite/tree/../notebooks/index.html?path=21bd8338_8d49_4dbc_98e0_fe039a9d6c4b.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<p>The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module can be used as an addition to <a class="reference internal" href="index.html#module-numpy" title="numpy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+</pre></div>
+</div>
+<p>To create an array with the second element invalid, we would do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To create a masked array where all values close to 1.e20 are invalid, we would
+do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.e20</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span> <span class="mf">1.e20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="800b9e21-6d87-42d1-b6c4-2c5d77bc46db" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('5dad7233-58f9-4b3b-863e-79477d4f425e','800b9e21-6d87-42d1-b6c4-2c5d77bc46db')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('5dad7233-58f9-4b3b-863e-79477d4f425e','800b9e21-6d87-42d1-b6c4-2c5d77bc46db')">Open In Tab</button></div><div id="bc9da5ce-5a54-40e4-9a13-9b9a25c3f4a3" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>For a complete discussion of creation methods for masked arrays please see
+section <a class="reference internal" href="#maskedarray-generic-constructing"><span class="std std-ref">Constructing masked arrays</span></a>.</p>
+</section>
+</section>
+<section id="using-numpy-ma">
+<h1>Using numpy.ma<a class="headerlink" href="#using-numpy-ma" title="Link to this heading">#</a></h1>
+<section id="constructing-masked-arrays">
+<span id="maskedarray-generic-constructing"></span><h2>Constructing masked arrays<a class="headerlink" href="#constructing-masked-arrays" title="Link to this heading">#</a></h2>
+<p>There are several ways to construct a masked array.</p>
+<ul>
+<li><p>A first possibility is to directly invoke the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray" title="numpy.ma.MaskedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaskedArray</span></code></a> class.</p></li>
+<li><p>A second possibility is to use the two masked array constructors,
+<a class="reference internal" href="generated/numpy.ma.array.html#numpy.ma.array" title="numpy.ma.array"><code class="xref py py-func docutils literal notranslate"><span class="pre">array</span></code></a> and <a class="reference internal" href="generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="numpy.ma.masked_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">masked_array</span></code></a>.</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.array.html#numpy.ma.array" title="numpy.ma.array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a>(data[, dtype, copy, order, mask, ...])</p></td>
+<td><p>An array class with possibly masked values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="numpy.ma.masked_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_array</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray" title="numpy.ma.MaskedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaskedArray</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><p>A third option is to take the view of an existing array. In that case, the
+mask of the view is set to <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a> if the array has no named fields,
+or an array of boolean with the same structure as the array otherwise.</p></li>
+</ul>
+<div class="try_examples_outer_container docutils container" id="357eb6bf-6ced-434f-9886-a06212daa7d2">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('357eb6bf-6ced-434f-9886-a06212daa7d2','58565c23-09df-4d8a-9f01-c921173890c6','67f3f384-3303-43e4-a75f-13910dbae6c8','../lite/tree/../notebooks/index.html?path=8b34e974_856e_48e6_9d71_2fb304c91d25.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
+<span class="go">masked_array(data=[1, 2, 3],</span>
+<span class="go">            mask=False,</span>
+<span class="go">      fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
+<span class="go">masked_array(data=[(1, 1.0), (2, 2.0)],</span>
+<span class="go">            mask=[(False, False), (False, False)],</span>
+<span class="go">      fill_value=(999999, 1e+20),</span>
+<span class="go">            dtype=[(&#39;a&#39;, &#39;&lt;i8&#39;), (&#39;b&#39;, &#39;&lt;f8&#39;)])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="67f3f384-3303-43e4-a75f-13910dbae6c8" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('357eb6bf-6ced-434f-9886-a06212daa7d2','67f3f384-3303-43e4-a75f-13910dbae6c8')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('357eb6bf-6ced-434f-9886-a06212daa7d2','67f3f384-3303-43e4-a75f-13910dbae6c8')">Open In Tab</button></div><div id="58565c23-09df-4d8a-9f01-c921173890c6" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><ul>
+<li><p>Yet another possibility is to use any of the following functions:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.asarray.html#numpy.ma.asarray" title="numpy.ma.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a>(a[, dtype, order])</p></td>
+<td><p>Convert the input to a masked array of the given data-type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.asanyarray.html#numpy.ma.asanyarray" title="numpy.ma.asanyarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asanyarray</span></code></a>(a[, dtype])</p></td>
+<td><p>Convert the input to a masked array, conserving subclasses.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.fix_invalid.html#numpy.ma.fix_invalid" title="numpy.ma.fix_invalid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_invalid</span></code></a>(a[, mask, copy, fill_value])</p></td>
+<td><p>Return input with invalid data masked and replaced by a fill value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_equal.html#numpy.ma.masked_equal" title="numpy.ma.masked_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_equal</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where equal to a given value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_greater.html#numpy.ma.masked_greater" title="numpy.ma.masked_greater"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_greater</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where greater than a given value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_greater_equal.html#numpy.ma.masked_greater_equal" title="numpy.ma.masked_greater_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_greater_equal</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where greater than or equal to a given value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_inside.html#numpy.ma.masked_inside" title="numpy.ma.masked_inside"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_inside</span></code></a>(x, v1, v2[, copy])</p></td>
+<td><p>Mask an array inside a given interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_invalid.html#numpy.ma.masked_invalid" title="numpy.ma.masked_invalid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_invalid</span></code></a>(a[, copy])</p></td>
+<td><p>Mask an array where invalid values occur (NaNs or infs).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_less.html#numpy.ma.masked_less" title="numpy.ma.masked_less"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_less</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where less than a given value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_less_equal.html#numpy.ma.masked_less_equal" title="numpy.ma.masked_less_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_less_equal</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where less than or equal to a given value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_not_equal.html#numpy.ma.masked_not_equal" title="numpy.ma.masked_not_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_not_equal</span></code></a>(x, value[, copy])</p></td>
+<td><p>Mask an array where <em>not</em> equal to a given value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_object.html#numpy.ma.masked_object" title="numpy.ma.masked_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_object</span></code></a>(x, value[, copy, shrink])</p></td>
+<td><p>Mask the array <em class="xref py py-obj">x</em> where the data are exactly equal to value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_outside.html#numpy.ma.masked_outside" title="numpy.ma.masked_outside"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_outside</span></code></a>(x, v1, v2[, copy])</p></td>
+<td><p>Mask an array outside a given interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/numpy.ma.masked_values.html#numpy.ma.masked_values" title="numpy.ma.masked_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_values</span></code></a>(x, value[, rtol, atol, copy, ...])</p></td>
+<td><p>Mask using floating point equality.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/numpy.ma.masked_where.html#numpy.ma.masked_where" title="numpy.ma.masked_where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_where</span></code></a>(condition, a[, copy])</p></td>
+<td><p>Mask an array where a condition is met.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</section>
+<section id="accessing-the-data">
+<h2>Accessing the data<a class="headerlink" href="#accessing-the-data" title="Link to this heading">#</a></h2>
+<p>The underlying data of a masked array can be accessed in several ways:</p>
+<ul class="simple">
+<li><p>through the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.data" title="numpy.ma.MaskedArray.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a> attribute. The output is a view of the
+array as a <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or one of its subclasses, depending on the
+type of the underlying data at the masked array creation.</p></li>
+<li><p>through the <a class="reference internal" href="generated/numpy.ma.MaskedArray.__array__.html#numpy.ma.MaskedArray.__array__" title="numpy.ma.MaskedArray.__array__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__array__</span></code></a> method. The output is then a
+<a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.</p></li>
+<li><p>by directly taking a view of the masked array as a <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+or one of its subclass (which is actually what using the
+<a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.data" title="numpy.ma.MaskedArray.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a> attribute does).</p></li>
+<li><p>by using the <a class="reference internal" href="generated/numpy.ma.getdata.html#numpy.ma.getdata" title="numpy.ma.getdata"><code class="xref py py-func docutils literal notranslate"><span class="pre">getdata</span></code></a> function.</p></li>
+</ul>
+<p>None of these methods is completely satisfactory if some entries have been
+marked as invalid. As a general rule, where a representation of the array is
+required without any masked entries, it is recommended to fill the array with
+the <a class="reference internal" href="generated/numpy.ma.filled.html#numpy.ma.filled" title="numpy.ma.filled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">filled</span></code></a> method.</p>
+</section>
+<section id="accessing-the-mask">
+<h2>Accessing the mask<a class="headerlink" href="#accessing-the-mask" title="Link to this heading">#</a></h2>
+<p>The mask of a masked array is accessible through its <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.mask" title="numpy.ma.MaskedArray.mask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask</span></code></a>
+attribute. We must keep in mind that a <code class="docutils literal notranslate"><span class="pre">True</span></code> entry in the mask indicates an
+<em>invalid</em> data.</p>
+<p>Another possibility is to use the <a class="reference internal" href="generated/numpy.ma.getmask.html#numpy.ma.getmask" title="numpy.ma.getmask"><code class="xref py py-func docutils literal notranslate"><span class="pre">getmask</span></code></a> and <a class="reference internal" href="generated/numpy.ma.getmaskarray.html#numpy.ma.getmaskarray" title="numpy.ma.getmaskarray"><code class="xref py py-func docutils literal notranslate"><span class="pre">getmaskarray</span></code></a>
+functions. <code class="docutils literal notranslate"><span class="pre">getmask(x)</span></code> outputs the mask of <code class="docutils literal notranslate"><span class="pre">x</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a masked
+array, and the special value <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-data docutils literal notranslate"><span class="pre">nomask</span></code></a> otherwise. <code class="docutils literal notranslate"><span class="pre">getmaskarray(x)</span></code>
+outputs the mask of <code class="docutils literal notranslate"><span class="pre">x</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a masked array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has no invalid
+entry or is not a masked array, the function outputs  a boolean array of
+<code class="docutils literal notranslate"><span class="pre">False</span></code> with as many elements as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</section>
+<section id="accessing-only-the-valid-entries">
+<h2>Accessing only the valid entries<a class="headerlink" href="#accessing-only-the-valid-entries" title="Link to this heading">#</a></h2>
+<p>To retrieve only the valid entries, we can use the inverse of the mask as an
+index. The inverse of the mask can be calculated with the
+<a class="reference internal" href="generated/numpy.logical_not.html#numpy.logical_not" title="numpy.logical_not"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.logical_not</span></code></a> function or simply with the <code class="docutils literal notranslate"><span class="pre">~</span></code> operator:</p>
+<div class="try_examples_outer_container docutils container" id="be862326-ef51-460b-a013-e486fec618c0">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('be862326-ef51-460b-a013-e486fec618c0','301df55f-5bcc-402c-88a1-3759158f3b66','4e92b670-d2f8-4986-bf25-579cac70a34f','../lite/tree/../notebooks/index.html?path=fa27a99c_5834_42fe_b8a7_c2f0cc551cf2.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span>
+<span class="go">masked_array(data=[1, 4],</span>
+<span class="go">               mask=[False, False],</span>
+<span class="go">         fill_value=999999)</span>
+</pre></div>
+</div>
+<p>Another way to retrieve the valid data is to use the <a class="reference internal" href="generated/numpy.ma.compressed.html#numpy.ma.compressed" title="numpy.ma.compressed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compressed</span></code></a>
+method, which returns a one-dimensional <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> (or one of its
+subclasses, depending on the value of the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.baseclass" title="numpy.ma.MaskedArray.baseclass"><code class="xref py py-attr docutils literal notranslate"><span class="pre">baseclass</span></code></a>
+attribute):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+<span class="go">array([1, 4])</span>
+</pre></div>
+</div>
+<p>Note that the output of <a class="reference internal" href="generated/numpy.ma.compressed.html#numpy.ma.compressed" title="numpy.ma.compressed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compressed</span></code></a> is always 1D.</p>
+</div>
+</div>
+<div id="4e92b670-d2f8-4986-bf25-579cac70a34f" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('be862326-ef51-460b-a013-e486fec618c0','4e92b670-d2f8-4986-bf25-579cac70a34f')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('be862326-ef51-460b-a013-e486fec618c0','4e92b670-d2f8-4986-bf25-579cac70a34f')">Open In Tab</button></div><div id="301df55f-5bcc-402c-88a1-3759158f3b66" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+<section id="modifying-the-mask">
+<h2>Modifying the mask<a class="headerlink" href="#modifying-the-mask" title="Link to this heading">#</a></h2>
+<section id="masking-an-entry">
+<h3>Masking an entry<a class="headerlink" href="#masking-an-entry" title="Link to this heading">#</a></h3>
+<p>The recommended way to mark one or several specific entries of a masked array
+as invalid is to assign the special value <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.masked" title="numpy.ma.masked"><code class="xref py py-attr docutils literal notranslate"><span class="pre">masked</span></code></a> to them:</p>
+<div class="try_examples_outer_container docutils container" id="c0d69b58-c28c-43e4-9a6d-9ebc980fca53">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('c0d69b58-c28c-43e4-9a6d-9ebc980fca53','29cf8f89-194d-4953-9895-b8da4f23452c','cdbe383e-fd09-41c0-8722-a011ac812528','../lite/tree/../notebooks/index.html?path=54d72a79_36ea_4b50_b5b9_c0c6ca34da2d.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[--, 2, 3],</span>
+<span class="go">             mask=[ True, False, False],</span>
+<span class="go">       fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span>
+<span class="go">masked_array(</span>
+<span class="go">  data=[[1, --, 3],</span>
+<span class="go">        [4, 5, --],</span>
+<span class="go">        [--, 8, 9]],</span>
+<span class="go">  mask=[[False,  True, False],</span>
+<span class="go">        [False, False,  True],</span>
+<span class="go">        [ True, False, False]],</span>
+<span class="go">  fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span>
+<span class="go">masked_array(data=[--, --, 3, 4],</span>
+<span class="go">             mask=[ True,  True, False, False],</span>
+<span class="go">       fill_value=999999)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="cdbe383e-fd09-41c0-8722-a011ac812528" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('c0d69b58-c28c-43e4-9a6d-9ebc980fca53','cdbe383e-fd09-41c0-8722-a011ac812528')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('c0d69b58-c28c-43e4-9a6d-9ebc980fca53','cdbe383e-fd09-41c0-8722-a011ac812528')">Open In Tab</button></div><div id="29cf8f89-194d-4953-9895-b8da4f23452c" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>A second possibility is to modify the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.mask" title="numpy.ma.MaskedArray.mask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask</span></code></a> directly,
+but this usage is discouraged.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When creating a new masked array with a simple, non-structured datatype,
+the mask is initially set to the special value <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a>, that
+corresponds roughly to the boolean <code class="docutils literal notranslate"><span class="pre">False</span></code>. Trying to set an element of
+<a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a> will fail with a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> exception, as a boolean
+does not support item assignment.</p>
+</div>
+<p>All the entries of an array can be masked at once by assigning <code class="docutils literal notranslate"><span class="pre">True</span></code> to the
+mask:</p>
+<div class="try_examples_outer_container docutils container" id="245b024c-69a1-4729-b5f1-76c3a83e7956">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('245b024c-69a1-4729-b5f1-76c3a83e7956','5c576c9f-956e-40ad-a713-e0e29f44945d','0afddd34-1a95-4c48-ba46-4ca932c35aa2','../lite/tree/../notebooks/index.html?path=5f29751e_fb21_46cd_984b_42d04304c091.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[--, --, --],</span>
+<span class="go">             mask=[ True,  True,  True],</span>
+<span class="go">       fill_value=999999,</span>
+<span class="go">            dtype=int64)</span>
+</pre></div>
+</div>
+<p>Finally, specific entries can be masked and/or unmasked by assigning to the
+mask a sequence of booleans:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, --, 3],</span>
+<span class="go">             mask=[False,  True, False],</span>
+<span class="go">       fill_value=999999)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="0afddd34-1a95-4c48-ba46-4ca932c35aa2" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('245b024c-69a1-4729-b5f1-76c3a83e7956','0afddd34-1a95-4c48-ba46-4ca932c35aa2')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('245b024c-69a1-4729-b5f1-76c3a83e7956','0afddd34-1a95-4c48-ba46-4ca932c35aa2')">Open In Tab</button></div><div id="5c576c9f-956e-40ad-a713-e0e29f44945d" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+<section id="unmasking-an-entry">
+<h3>Unmasking an entry<a class="headerlink" href="#unmasking-an-entry" title="Link to this heading">#</a></h3>
+<p>To unmask one or several specific entries, we can just assign one or several
+new valid values to them:</p>
+<div class="try_examples_outer_container docutils container" id="9043de89-54de-4793-babd-42ed3d2d77f1">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('9043de89-54de-4793-babd-42ed3d2d77f1','718f8b1a-1bcf-4ba5-8d57-95d0d5a9a973','e0e05c53-938c-4ef8-b019-677e5d6cd06a','../lite/tree/../notebooks/index.html?path=e21f6daa_269a_4dc8_89aa_a3464a7e066a.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, --],</span>
+<span class="go">             mask=[False, False,  True],</span>
+<span class="go">       fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, 5],</span>
+<span class="go">             mask=[False, False, False],</span>
+<span class="go">       fill_value=999999)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="e0e05c53-938c-4ef8-b019-677e5d6cd06a" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('9043de89-54de-4793-babd-42ed3d2d77f1','e0e05c53-938c-4ef8-b019-677e5d6cd06a')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('9043de89-54de-4793-babd-42ed3d2d77f1','e0e05c53-938c-4ef8-b019-677e5d6cd06a')">Open In Tab</button></div><div id="718f8b1a-1bcf-4ba5-8d57-95d0d5a9a973" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unmasking an entry by direct assignment will silently fail if the masked
+array has a <em>hard</em> mask, as shown by the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.hardmask" title="numpy.ma.MaskedArray.hardmask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hardmask</span></code></a>
+attribute. This feature was introduced to prevent overwriting the mask.
+To force the unmasking of an entry where the array has a hard mask,
+the mask must first to be softened using the <a class="reference internal" href="generated/numpy.ma.soften_mask.html#numpy.ma.soften_mask" title="numpy.ma.soften_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">soften_mask</span></code></a> method
+before the allocation. It can be re-hardened with <a class="reference internal" href="generated/numpy.ma.harden_mask.html#numpy.ma.harden_mask" title="numpy.ma.harden_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">harden_mask</span></code></a> as
+follows:</p>
+</div>
+<div class="try_examples_outer_container docutils container" id="caedb368-82ca-4200-b78c-90fac424f6fb">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('caedb368-82ca-4200-b78c-90fac424f6fb','ab49ca00-0cf5-46c0-8ac8-d3bccfcfeb52','a82de5c3-538f-4fe7-8856-346a588e7755','../lite/tree/../notebooks/index.html?path=22fb250b_a2b3_44b8_aa0b_f77526335909.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">hard_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, --],</span>
+<span class="go">               mask=[False, False,  True],</span>
+<span class="go">         fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, --],</span>
+<span class="go">               mask=[False, False,  True],</span>
+<span class="go">         fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">soften_mask</span><span class="p">()</span>
+<span class="go">masked_array(data=[1, 2, --],</span>
+<span class="go">               mask=[False, False,  True],</span>
+<span class="go">         fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, 5],</span>
+<span class="go">               mask=[False, False, False],</span>
+<span class="go">         fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">harden_mask</span><span class="p">()</span>
+<span class="go">masked_array(data=[1, 2, 5],</span>
+<span class="go">               mask=[False, False, False],</span>
+<span class="go">         fill_value=999999)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="a82de5c3-538f-4fe7-8856-346a588e7755" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('caedb368-82ca-4200-b78c-90fac424f6fb','a82de5c3-538f-4fe7-8856-346a588e7755')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('caedb368-82ca-4200-b78c-90fac424f6fb','a82de5c3-538f-4fe7-8856-346a588e7755')">Open In Tab</button></div><div id="ab49ca00-0cf5-46c0-8ac8-d3bccfcfeb52" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>To unmask all masked entries of a masked array (provided the mask isn’t a hard
+mask), the simplest solution is to assign the constant <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a> to the
+mask:</p>
+<div class="try_examples_outer_container docutils container" id="40bc88fd-cdbc-4f7b-b97d-b4bd7bbb600f">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('40bc88fd-cdbc-4f7b-b97d-b4bd7bbb600f','91370151-2e1e-406c-a2bd-bbdc4fa78857','b66e6519-c63b-4234-b173-da95888b7456','../lite/tree/../notebooks/index.html?path=9bcdc139_7f82_4992_b3d6_0acc37a06570.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, --],</span>
+<span class="go">             mask=[False, False,  True],</span>
+<span class="go">       fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">nomask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">masked_array(data=[1, 2, 3],</span>
+<span class="go">             mask=[False, False, False],</span>
+<span class="go">       fill_value=999999)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="b66e6519-c63b-4234-b173-da95888b7456" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('40bc88fd-cdbc-4f7b-b97d-b4bd7bbb600f','b66e6519-c63b-4234-b173-da95888b7456')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('40bc88fd-cdbc-4f7b-b97d-b4bd7bbb600f','b66e6519-c63b-4234-b173-da95888b7456')">Open In Tab</button></div><div id="91370151-2e1e-406c-a2bd-bbdc4fa78857" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+</section>
+<section id="indexing-and-slicing">
+<h2>Indexing and slicing<a class="headerlink" href="#indexing-and-slicing" title="Link to this heading">#</a></h2>
+<p>As a <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray" title="numpy.ma.MaskedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaskedArray</span></code></a> is a subclass of <a class="reference internal" href="generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, it inherits
+its mechanisms for indexing and slicing.</p>
+<p>When accessing a single entry of a masked array with no named fields, the
+output is either a scalar (if the corresponding entry of the mask is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>) or the special value <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.masked" title="numpy.ma.masked"><code class="xref py py-attr docutils literal notranslate"><span class="pre">masked</span></code></a> (if the corresponding entry of
+the mask is <code class="docutils literal notranslate"><span class="pre">True</span></code>):</p>
+<div class="try_examples_outer_container docutils container" id="17fb8898-8266-4614-8cf8-428e70984047">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('17fb8898-8266-4614-8cf8-428e70984047','bc8d65e9-5a08-42fe-96c4-f1cab383663c','53d0ba2c-21ad-4471-a0dd-2d6d351da615','../lite/tree/../notebooks/index.html?path=599b962d_8242_4573_8ad5_87460d5a4224.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">masked</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="53d0ba2c-21ad-4471-a0dd-2d6d351da615" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('17fb8898-8266-4614-8cf8-428e70984047','53d0ba2c-21ad-4471-a0dd-2d6d351da615')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('17fb8898-8266-4614-8cf8-428e70984047','53d0ba2c-21ad-4471-a0dd-2d6d351da615')">Open In Tab</button></div><div id="bc8d65e9-5a08-42fe-96c4-f1cab383663c" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>If the masked array has named fields, accessing a single entry returns a
+<a class="reference internal" href="arrays.scalars.html#numpy.void" title="numpy.void"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.void</span></code></a> object if none of the fields are masked, or a 0d masked
+array with the same dtype as the initial array if at least one of the fields
+is masked.</p>
+<div class="try_examples_outer_container docutils container" id="71ec2dcd-365e-46bd-bb42-e60415ed9008">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('71ec2dcd-365e-46bd-bb42-e60415ed9008','2537c501-4e03-40fe-ba4d-9c3f1a76d740','0a3b40de-d70f-4c1b-b9e6-248ef4724cab','../lite/tree/../notebooks/index.html?path=91da30b3_ed13_4d4b_aa05_1e7e17d58a9b.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span>
+<span class="gp">... </span>               <span class="n">mask</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+<span class="gp">... </span>              <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">(1, 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">(3, --)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="0a3b40de-d70f-4c1b-b9e6-248ef4724cab" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('71ec2dcd-365e-46bd-bb42-e60415ed9008','0a3b40de-d70f-4c1b-b9e6-248ef4724cab')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('71ec2dcd-365e-46bd-bb42-e60415ed9008','0a3b40de-d70f-4c1b-b9e6-248ef4724cab')">Open In Tab</button></div><div id="2537c501-4e03-40fe-ba4d-9c3f1a76d740" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>When accessing a slice, the output is a masked array whose
+<a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.data" title="numpy.ma.MaskedArray.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a> attribute is a view of the original data, and whose
+mask is either <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.nomask" title="numpy.ma.nomask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nomask</span></code></a> (if there was no invalid entries in the original
+array) or a view of the corresponding slice of the original mask. The view is
+required to ensure propagation of any modification of the mask to the original.</p>
+<div class="try_examples_outer_container docutils container" id="e995a169-c471-40db-b166-e5f92ef6ecfd">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('e995a169-c471-40db-b166-e5f92ef6ecfd','b5d85376-e371-4edf-939d-082d1da65176','4c1a3670-6758-48b4-81f9-bc36b6670a2f','../lite/tree/../notebooks/index.html?path=dfd3f0b9_0926_4123_a7f4_14a538fa93cb.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span>
+<span class="go">masked_array(data=[1, --, 3],</span>
+<span class="go">             mask=[False,  True, False],</span>
+<span class="go">       fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span>
+<span class="go">masked_array(data=[1, -1, 3],</span>
+<span class="go">             mask=[False, False, False],</span>
+<span class="go">       fill_value=999999)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">mask</span>
+<span class="go">array([False, False, False, False,  True])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([ 1, -1,  3,  4,  5])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="4c1a3670-6758-48b4-81f9-bc36b6670a2f" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('e995a169-c471-40db-b166-e5f92ef6ecfd','4c1a3670-6758-48b4-81f9-bc36b6670a2f')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('e995a169-c471-40db-b166-e5f92ef6ecfd','4c1a3670-6758-48b4-81f9-bc36b6670a2f')">Open In Tab</button></div><div id="b5d85376-e371-4edf-939d-082d1da65176" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>Accessing a field of a masked array with structured datatype returns a
+<a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray" title="numpy.ma.MaskedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaskedArray</span></code></a>.</p>
+</section>
+<section id="operations-on-masked-arrays">
+<h2>Operations on masked arrays<a class="headerlink" href="#operations-on-masked-arrays" title="Link to this heading">#</a></h2>
+<p>Arithmetic and comparison operations are supported by masked arrays.
+As much as possible, invalid entries of a masked array are not processed,
+meaning that the corresponding <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.MaskedArray.data" title="numpy.ma.MaskedArray.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a> entries
+<em>should</em> be the same before and after the operation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We need to stress that this behavior may not be systematic, that masked
+data may be affected by the operation in some cases and therefore users
+should not rely on this data remaining unchanged.</p>
+</div>
+<p>The <a class="reference internal" href="#module-numpy.ma" title="numpy.ma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code></a> module comes with a specific implementation of most
+ufuncs. Unary and binary functions that have a validity domain (such as
+<a class="reference internal" href="generated/numpy.log.html#numpy.log" title="numpy.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log</span></code></a> or <a class="reference internal" href="generated/numpy.divide.html#numpy.divide" title="numpy.divide"><code class="xref py py-func docutils literal notranslate"><span class="pre">divide</span></code></a>) return the <a class="reference internal" href="maskedarray.baseclass.html#numpy.ma.masked" title="numpy.ma.masked"><code class="xref py py-data docutils literal notranslate"><span class="pre">masked</span></code></a>
+constant whenever the input is masked or falls outside the validity domain:</p>
+<div class="try_examples_outer_container docutils container" id="40c58ca0-0aee-4033-b5a3-e7ece2895672">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('40c58ca0-0aee-4033-b5a3-e7ece2895672','bc20b081-3602-4527-9c52-65a4fce58784','334dab05-4730-4415-aafe-a61a96670303','../lite/tree/../notebooks/index.html?path=9fb18f5f_f21f_4189_a8cf_6e5b7a7e2018.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ma</span><span class="o">.</span><span class="n">log</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">masked_array(data=[--, --, 0.0, 0.6931471805599453],</span>
+<span class="go">             mask=[ True,  True, False, False],</span>
+<span class="go">       fill_value=1e+20)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="334dab05-4730-4415-aafe-a61a96670303" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('40c58ca0-0aee-4033-b5a3-e7ece2895672','334dab05-4730-4415-aafe-a61a96670303')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('40c58ca0-0aee-4033-b5a3-e7ece2895672','334dab05-4730-4415-aafe-a61a96670303')">Open In Tab</button></div><div id="bc20b081-3602-4527-9c52-65a4fce58784" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>Masked arrays also support standard numpy ufuncs. The output is then a masked
+array. The result of a unary ufunc is masked wherever the input is masked. The
+result of a binary ufunc is masked wherever any of the input is masked. If the
+ufunc also returns the optional context output (a 3-element tuple containing
+the name of the ufunc, its arguments and its domain), the context is processed
+and entries of the output masked array are masked wherever the corresponding
+input fall outside the validity domain:</p>
+<div class="try_examples_outer_container docutils container" id="c5a8c5b7-be49-48ed-853e-2131c62a8b58">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('c5a8c5b7-be49-48ed-853e-2131c62a8b58','6e894fb7-3dae-4494-be18-55c1ad76c07f','22140915-ec53-42de-a4ab-eda20eb8a43f','../lite/tree/../notebooks/index.html?path=608d5aa7_bd2a_4929_8616_53ea85b1b0e2.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">masked_array(data=[--, 0.0, --, 0.6931471805599453, --],</span>
+<span class="go">             mask=[ True, False,  True, False,  True],</span>
+<span class="go">       fill_value=1e+20)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="22140915-ec53-42de-a4ab-eda20eb8a43f" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('c5a8c5b7-be49-48ed-853e-2131c62a8b58','22140915-ec53-42de-a4ab-eda20eb8a43f')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('c5a8c5b7-be49-48ed-853e-2131c62a8b58','22140915-ec53-42de-a4ab-eda20eb8a43f')">Open In Tab</button></div><div id="6e894fb7-3dae-4494-be18-55c1ad76c07f" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+</section>
+<section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h1>
+<section id="data-with-a-given-value-representing-missing-data">
+<h2>Data with a given value representing missing data<a class="headerlink" href="#data-with-a-given-value-representing-missing-data" title="Link to this heading">#</a></h2>
+<p>Let’s consider a list of elements, <code class="docutils literal notranslate"><span class="pre">x</span></code>, where values of -9999. represent
+missing data. We wish to compute the average value of the data and the vector
+of anomalies (deviations from the average):</p>
+<div class="try_examples_outer_container docutils container" id="4a73c17b-e672-4b4a-9620-3a40e6551679">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('4a73c17b-e672-4b4a-9620-3a40e6551679','6ff35876-16cf-4b04-9d11-d95801fe9a13','ef2e8d69-7adf-4740-bdf2-3b288bbac0c5','../lite/tree/../notebooks/index.html?path=0daffaea_1a2d_411f_87f3_d07c59fbdfd4.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="o">-</span><span class="mf">9999.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="mf">4.</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">9999.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mx</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="go">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mx</span> <span class="o">-</span> <span class="n">mx</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="go">[-2.0 -1.0 -- 1.0 2.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mx</span><span class="o">.</span><span class="n">anom</span><span class="p">())</span>
+<span class="go">[-2.0 -1.0 -- 1.0 2.0]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="ef2e8d69-7adf-4740-bdf2-3b288bbac0c5" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('4a73c17b-e672-4b4a-9620-3a40e6551679','ef2e8d69-7adf-4740-bdf2-3b288bbac0c5')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('4a73c17b-e672-4b4a-9620-3a40e6551679','ef2e8d69-7adf-4740-bdf2-3b288bbac0c5')">Open In Tab</button></div><div id="6ff35876-16cf-4b04-9d11-d95801fe9a13" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+<section id="filling-in-the-missing-data">
+<h2>Filling in the missing data<a class="headerlink" href="#filling-in-the-missing-data" title="Link to this heading">#</a></h2>
+<p>Suppose now that we wish to print that same data, but with the missing values
+replaced by the average value.</p>
+<div class="try_examples_outer_container docutils container" id="6cbf39de-eed4-43cc-bcec-300eca43be57">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('6cbf39de-eed4-43cc-bcec-300eca43be57','690a43a8-6055-428d-8303-4bfac38dd9db','f9fc45dd-5db8-49fd-bec4-4b5e70068402','../lite/tree/../notebooks/index.html?path=e390c0ee_4e3f_42ce_b298_c47e03b9846d.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mx</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_values</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">9999.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mx</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">mx</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+<span class="go">[0.  1.  2.  3.  4.]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="f9fc45dd-5db8-49fd-bec4-4b5e70068402" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('6cbf39de-eed4-43cc-bcec-300eca43be57','f9fc45dd-5db8-49fd-bec4-4b5e70068402')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('6cbf39de-eed4-43cc-bcec-300eca43be57','f9fc45dd-5db8-49fd-bec4-4b5e70068402')">Open In Tab</button></div><div id="690a43a8-6055-428d-8303-4bfac38dd9db" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+<section id="numerical-operations">
+<h2>Numerical operations<a class="headerlink" href="#numerical-operations" title="Link to this heading">#</a></h2>
+<p>Numerical operations can be easily performed without worrying about missing
+values, dividing by zero, square roots of negative numbers, etc.:</p>
+<div class="try_examples_outer_container docutils container" id="e561f2e0-0222-4fbc-86a1-07b59c074ab6">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('e561f2e0-0222-4fbc-86a1-07b59c074ab6','f47ccb04-1ae3-417f-8eb4-b0c123c0eaf7','dc0438c2-fbae-4f17-889c-1bc2c5de0241','../lite/tree/../notebooks/index.html?path=b25d4fb0_97c6_4b36_a3bd_f67081417df2.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">y</span><span class="p">))</span>
+<span class="go">[1.0 -- -- 1.0 -- --]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="dc0438c2-fbae-4f17-889c-1bc2c5de0241" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('e561f2e0-0222-4fbc-86a1-07b59c074ab6','dc0438c2-fbae-4f17-889c-1bc2c5de0241')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('e561f2e0-0222-4fbc-86a1-07b59c074ab6','dc0438c2-fbae-4f17-889c-1bc2c5de0241')">Open In Tab</button></div><div id="f47ccb04-1ae3-417f-8eb4-b0c123c0eaf7" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script><p>Four values of the output are invalid: the first one comes from taking the
+square root of a negative number, the second from the division by zero, and
+the last two where the inputs were masked.</p>
+</section>
+<section id="ignoring-extreme-values">
+<h2>Ignoring extreme values<a class="headerlink" href="#ignoring-extreme-values" title="Link to this heading">#</a></h2>
+<p>Let’s consider an array <code class="docutils literal notranslate"><span class="pre">d</span></code> of floats between 0 and 1. We wish to
+compute the average of the values of <code class="docutils literal notranslate"><span class="pre">d</span></code> while ignoring any data outside
+the range <code class="docutils literal notranslate"><span class="pre">[0.2,</span> <span class="pre">0.9]</span></code>:</p>
+<div class="try_examples_outer_container docutils container" id="c217dc89-e261-4e11-bb0a-ea1d47ed40ab">
+<div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesShowIframe('c217dc89-e261-4e11-bb0a-ea1d47ed40ab','d1796b01-b8ec-468c-8a65-58d794e975a1','e57fdc21-883c-416f-b0ea-60067d6bea09','../lite/tree/../notebooks/index.html?path=078463af_0ed8_427b_894b_c2a429e6c25c.ipynb','None')">Try it in your browser!</button></div><div class="try_examples_content docutils container">
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy.ma</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_outside</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="go">-0.05263157894736836</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div id="e57fdc21-883c-416f-b0ea-60067d6bea09" class="try_examples_outer_iframe  hidden"><div class="try_examples_button_container"><button class="try_examples_button" onclick="window.tryExamplesHideIframe('c217dc89-e261-4e11-bb0a-ea1d47ed40ab','e57fdc21-883c-416f-b0ea-60067d6bea09')">Go Back</button><button class="try_examples_button" onclick="window.openInNewTab('c217dc89-e261-4e11-bb0a-ea1d47ed40ab','e57fdc21-883c-416f-b0ea-60067d6bea09')">Open In Tab</button></div><div id="d1796b01-b8ec-468c-8a65-58d794e975a1" class="jupyterlite_sphinx_iframe_container"></div></div><script>document.addEventListener("DOMContentLoaded", function() {window.loadTryExamplesConfig("../try_examples.json");});</script></section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="maskedarray.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Masked arrays</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="maskedarray.baseclass.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Constants of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rationale">Rationale</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-a-masked-array">What is a masked array?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.ma</span></code> module</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-numpy-ma">Using numpy.ma</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-masked-arrays">Constructing masked arrays</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-data">Accessing the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-mask">Accessing the mask</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-only-the-valid-entries">Accessing only the valid entries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modifying-the-mask">Modifying the mask</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#masking-an-entry">Masking an entry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unmasking-an-entry">Unmasking an entry</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexing-and-slicing">Indexing and slicing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-masked-arrays">Operations on masked arrays</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-with-a-given-value-representing-missing-data">Data with a given value representing missing data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filling-in-the-missing-data">Filling in the missing data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-operations">Numerical operations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ignoring-extreme-values">Ignoring extreme values</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2008-2025, NumPy Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
