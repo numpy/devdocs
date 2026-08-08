@@ -1,0 +1,1070 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Adding a reduction loop to a ufunc &#8212; NumPy v2.6.dev0 Manual</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/numpy.css?v=7e165a8b" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+
+    <script src="../_static/documentation_options.js?v=685b1744"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="numpy.org/doc/stable/" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/c-info.reduction-loop-tutorial';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://numpy.org/doc/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'devdocs';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Beyond the basics" href="c-info.beyond-basics.html" />
+    <link rel="prev" title="Writing your own ufunc" href="c-info.ufunc-tutorial.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.6.dev0" />
+    <meta name="docbuild:last-update" content="Aug 08, 2026"/>
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/numpylogo.svg" class="logo__image only-light" alt="NumPy v2.6.dev0 Manual - Home"/>
+    <img src="../_static/numpylogo_dark.svg" class="logo__image only-dark pst-js-only" alt="NumPy v2.6.dev0 Manual - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../building/index.html">
+    Building from source
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Release notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/numpy-tutorials/">
+    Learn
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/neps">
+    NEPs
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/numpy/numpy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../building/index.html">
+    Building from source
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Release notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/numpy-tutorials/">
+    Learn
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://numpy.org/neps">
+    NEPs
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/numpy/numpy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="whatisnumpy.html">What is NumPy?</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://numpy.org/install/">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">NumPy quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="absolute_beginners.html">NumPy: the absolute basics for beginners</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Fundamentals and usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="basics.html">NumPy fundamentals</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="numpy-for-matlab-users.html">NumPy for MATLAB users</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://numpy.org/numpy-tutorials/">NumPy tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtos_index.html">NumPy how-tos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Advanced usage and interoperability</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="c-info.html">Using NumPy C-API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="c-info.how-to-extend.html">How to extend NumPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c-info.python-as-glue.html">Using Python as glue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c-info.ufunc-tutorial.html">Writing your own ufunc</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Adding a reduction loop to a ufunc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c-info.beyond-basics.html">Beyond the basics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../f2py/index.html">F2PY user guide and reference manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/underthehood.html">Under-the-hood documentation for developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.interoperability.html">Interoperability with NumPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.performant_code.html">Writing Performant NumPy Code with Multi-Core CPUs</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../numpy_2_0_migration_guide.html">NumPy 2.0 migration guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">NumPy license</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">NumPy user guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="c-info.html" class="nav-link">Using NumPy C-API</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Adding a reduction loop to a ufunc</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="adding-a-reduction-loop-to-a-ufunc">
+<span id="c-api-reduction-loop-tutorial"></span><h1>Adding a reduction loop to a ufunc<a class="headerlink" href="#adding-a-reduction-loop-to-a-ufunc" title="Link to this heading">#</a></h1>
+<p id="index-0">This tutorial assumes you are already familiar with writing a basic ufunc,
+as described in <a class="reference internal" href="c-info.ufunc-tutorial.html"><span class="doc">Writing your own ufunc</span></a>.</p>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="../reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="numpy.ufunc.reduce"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce</span></code></a> historically only worked for ufuncs with
+exactly one output. This covers the <code class="docutils literal notranslate"><span class="pre">.sum()</span></code>/<code class="docutils literal notranslate"><span class="pre">.prod()</span></code>/… methods
+built on top of it for functions like <a class="reference internal" href="../reference/generated/numpy.add.html#numpy.add" title="numpy.add"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.add</span></code></a> and
+<a class="reference internal" href="../reference/generated/numpy.multiply.html#numpy.multiply" title="numpy.multiply"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.multiply</span></code></a>.</p>
+<p>What makes those work is that the ordinary two-input/one-output elementwise
+loop can double as the reduction loop. NumPy points the loop’s output and
+its first input at the same piece of memory. It also gives that pointer a
+stride of zero, so the pointer never advances. The loop then reads the
+running result and writes the updated result back to that same location as
+it walks over the array.</p>
+<p>That trick does not generalize to ufuncs with more than one output, such as
+<a class="reference internal" href="../reference/generated/numpy.divmod.html#numpy.divmod" title="numpy.divmod"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.divmod</span></code></a>. Their forward loop has a two-in/<code class="docutils literal notranslate"><span class="pre">nout</span></code>-out
+signature. There is no natural way to pair each output up with an input
+that could hold its running result.</p>
+<p>To support <code class="docutils literal notranslate"><span class="pre">reduce</span></code> for such ufuncs, an <code class="docutils literal notranslate"><span class="pre">ArrayMethod</span></code> can register a
+<em>dedicated</em> reduction loop through the <code class="docutils literal notranslate"><span class="pre">NPY_METH_get_reduction_loop</span></code>
+slot. That loop has an <code class="docutils literal notranslate"><span class="pre">(nout</span> <span class="pre">+</span> <span class="pre">1)</span></code>-in/<code class="docutils literal notranslate"><span class="pre">nout</span></code>-out signature. It takes
+the current per-output accumulators plus one streamed input element, and
+writes the updated accumulators. We use this signature because it collapses
+down to the usual two-input/one-output case when <code class="docutils literal notranslate"><span class="pre">nout</span></code> is 1. See
+<a class="reference internal" href="../reference/c-api/array.html#c.NPY_METH_get_reduction_loop" title="NPY_METH_get_reduction_loop"><code class="xref c c-macro docutils literal notranslate"><span class="pre">NPY_METH_get_reduction_loop</span></code></a> in the
+<a class="reference internal" href="../reference/c-api/array.html"><span class="doc">ArrayMethod API reference</span></a> for the exact
+data/stride layout.</p>
+<p>Only the restriction on the number of <em>outputs</em> is lifted. The number of
+inputs is unchanged: <code class="docutils literal notranslate"><span class="pre">reduce</span></code> still requires exactly two, as do
+<code class="docutils literal notranslate"><span class="pre">accumulate</span></code> and <code class="docutils literal notranslate"><span class="pre">reduceat</span></code>. Reducing repeatedly combines an
+accumulated result with one new element, which only makes sense for a
+ufunc taking two inputs.</p>
+<p>The three cases look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>  <span class="c1"># 2 inputs, 1 output</span>
+<span class="go">np.float64(6.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">modf</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>  <span class="c1"># 1 input, 2 outputs</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">reduce only supported for binary functions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>  <span class="c1"># 2 inputs, 2 outputs</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">TypeError</span>: <span class="n">divmod.reduce is not supported: the resolved loop does not register a reduction loop</span>
+</pre></div>
+</div>
+<p>The first two behaviours are unchanged by this feature. <a class="reference internal" href="../reference/generated/numpy.modf.html#numpy.modf" title="numpy.modf"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.modf</span></code></a>
+takes a single input, so it can never be reduced. Only the third case is
+new: <a class="reference internal" href="../reference/generated/numpy.divmod.html#numpy.divmod" title="numpy.divmod"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.divmod</span></code></a> has the right number of inputs, and fails purely
+because no reduction loop is registered for it. The rest of this tutorial
+shows how to write and register such a loop.</p>
+</section>
+<section id="example-a-two-output-minimummaximum-ufunc">
+<h2>Example: a two-output <code class="docutils literal notranslate"><span class="pre">minimummaximum</span></code> ufunc<a class="headerlink" href="#example-a-two-output-minimummaximum-ufunc" title="Link to this heading">#</a></h2>
+<p>The example below defines a <code class="docutils literal notranslate"><span class="pre">minimummaximum</span></code> ufunc for the <code class="docutils literal notranslate"><span class="pre">'f8'</span></code>
+(<code class="docutils literal notranslate"><span class="pre">double</span></code>) dtype only. It computes the running minimum and maximum in a
+single pass, so <code class="docutils literal notranslate"><span class="pre">minimummaximum.reduce(a)</span></code> returns the pair
+<code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code> using one loop over <code class="docutils literal notranslate"><span class="pre">a</span></code> rather than two.</p>
+<p><code class="docutils literal notranslate"><span class="pre">NPY_METH_get_reduction_loop</span></code> is an <code class="docutils literal notranslate"><span class="pre">ArrayMethod</span></code> slot. The ufunc’s loop
+must therefore be registered through the <code class="docutils literal notranslate"><span class="pre">PyArrayMethod_Spec</span></code>
+API (<a class="reference internal" href="../reference/c-api/array.html#c.PyUFunc_AddLoopFromSpec" title="PyUFunc_AddLoopFromSpec"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyUFunc_AddLoopFromSpec</span></code></a>), not the legacy
+<code class="docutils literal notranslate"><span class="pre">PyUFunc_FromFuncAndData</span></code> loop table used in the previous tutorial. The
+ufunc itself is still created with <a class="reference internal" href="../reference/c-api/ufunc.html#c.PyUFunc_FromFuncAndData" title="PyUFunc_FromFuncAndData"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyUFunc_FromFuncAndData</span></code></a>, just
+without any loops attached yet. The loop is added separately, via its
+<code class="docutils literal notranslate"><span class="pre">ArrayMethod</span></code> spec.</p>
+<p>The forward (elementwise) loop is 2-in/2-out:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>and the reduction loop is 3-in/2-out (<code class="docutils literal notranslate"><span class="pre">nout</span> <span class="pre">=</span> <span class="pre">2</span></code> outputs, so
+<code class="docutils literal notranslate"><span class="pre">nout</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">=</span> <span class="pre">3</span></code> inputs):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">acc_min</span><span class="p">,</span> <span class="n">acc_max</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">acc_min</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">acc_max</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The place in the code corresponding to the actual computations is marked
+with <code class="docutils literal notranslate"><span class="pre">/*</span> <span class="pre">BEGIN</span> <span class="pre">main</span> <span class="pre">computation</span> <span class="pre">*/</span></code> and <code class="docutils literal notranslate"><span class="pre">/*</span> <span class="pre">END</span> <span class="pre">main</span> <span class="pre">computation</span> <span class="pre">*/</span></code>.</p>
+<blockquote>
+<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define PY_SSIZE_T_CLEAN</span>
+<span class="cp">#define NPY_TARGET_VERSION NPY_2_6_API_VERSION</span>
+<span class="cp">#define NPY_NO_DEPRECATED_API NPY_API_VERSION</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;numpy/ndarraytypes.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;numpy/ufuncobject.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;numpy/dtype_api.h&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * minmax.c</span>
+<span class="cm"> * A minimal ufunc for a single dtype (&#39;f8&#39;) that computes the</span>
+<span class="cm"> * running minimum and maximum in one pass, and registers a</span>
+<span class="cm"> * reduction loop for it so that `minimummaximum.reduce(a)` computes</span>
+<span class="cm"> * the actual minmax.</span>
+<span class="cm"> */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">double_minimummaximum_loop</span><span class="p">(</span><span class="n">PyArrayMethod_Context</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="n">npy_intp</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">dimensions</span><span class="p">[],</span>
+<span class="w">        </span><span class="n">npy_intp</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">strides</span><span class="p">[],</span><span class="w"> </span><span class="n">NpyAuxData</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">auxdata</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">in1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="o">*</span><span class="n">in2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="o">*</span><span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">is1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">is2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">os1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">os2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">npy_intp</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* BEGIN main computation */</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">in1</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">in2</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">        </span><span class="cm">/* END main computation */</span>
+<span class="w">        </span><span class="n">in1</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">is1</span><span class="p">;</span><span class="w"> </span><span class="n">in2</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">is2</span><span class="p">;</span><span class="w"> </span><span class="n">out1</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">os1</span><span class="p">;</span><span class="w"> </span><span class="n">out2</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">os2</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * The reduce machinery points each out_i at the same memory as the</span>
+<span class="cm"> * matching acc_i (with stride 0), so this both reads the running</span>
+<span class="cm"> * accumulators and writes the new ones.</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">double_minimummaximum_reduce_loop</span><span class="p">(</span><span class="n">PyArrayMethod_Context</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">data</span><span class="p">[],</span><span class="w"> </span><span class="n">npy_intp</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">dimensions</span><span class="p">[],</span>
+<span class="w">        </span><span class="n">npy_intp</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">strides</span><span class="p">[],</span><span class="w"> </span><span class="n">NpyAuxData</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">auxdata</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">acc_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="o">*</span><span class="n">acc_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">out_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="o">*</span><span class="n">out_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">s_amin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">s_amax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">s_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">    </span><span class="n">npy_intp</span><span class="w"> </span><span class="n">s_omin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="n">s_omax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strides</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">npy_intp</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* BEGIN main computation */</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">cur_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">acc_min</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">cur_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">acc_max</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">x</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">out_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">cur_min</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">cur_min</span><span class="p">;</span>
+<span class="w">        </span><span class="o">*</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">out_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cur_max</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">cur_max</span><span class="p">;</span>
+<span class="w">        </span><span class="cm">/* END main computation */</span>
+<span class="w">        </span><span class="n">acc_min</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s_amin</span><span class="p">;</span><span class="w"> </span><span class="n">acc_max</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s_amax</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s_x</span><span class="p">;</span>
+<span class="w">        </span><span class="n">out_min</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s_omin</span><span class="p">;</span><span class="w"> </span><span class="n">out_max</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">s_omax</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * get_reduction_loop is called by the reduce machinery in place of</span>
+<span class="cm"> * get_strided_loop.  It hands back the (nout+1)-&gt;nout loop above</span>
+<span class="cm"> * instead of the forward elementwise one.</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">minimummaximum_get_reduction_loop</span><span class="p">(</span><span class="n">PyArrayMethod_Context</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">aligned</span><span class="p">),</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">move_references</span><span class="p">),</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">npy_intp</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">strides</span><span class="p">),</span>
+<span class="w">        </span><span class="n">PyArrayMethod_StridedLoop</span><span class="w"> </span><span class="o">**</span><span class="n">out_loop</span><span class="p">,</span>
+<span class="w">        </span><span class="n">NpyAuxData</span><span class="w"> </span><span class="o">**</span><span class="n">out_transferdata</span><span class="p">,</span>
+<span class="w">        </span><span class="n">NPY_ARRAYMETHOD_FLAGS</span><span class="w"> </span><span class="o">*</span><span class="n">flags</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="o">*</span><span class="n">out_loop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">double_minimummaximum_reduce_loop</span><span class="p">;</span>
+<span class="w">    </span><span class="o">*</span><span class="n">out_transferdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="o">*</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NPY_METH_NO_FLOATINGPOINT_ERRORS</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Only one loop is registered (&#39;f8&#39;), so the promoter always</span>
+<span class="cm"> * requests float64 for every input/output that isn&#39;t already</span>
+<span class="cm"> * pinned by `signature` (e.g. via `dtype=`). This is what lets</span>
+<span class="cm"> * plain Python floats/ints, or other numeric dtypes, be used</span>
+<span class="cm"> * directly. Without it, only exact `np.float64` inputs would</span>
+<span class="cm"> * match the loop registered below. A ufunc that registers loops</span>
+<span class="cm"> * for several dtypes would instead pick the common dtype of its</span>
+<span class="cm"> * inputs here (see `PyArray_PromoteDTypeSequence`). This one only</span>
+<span class="cm"> * ever has a single dtype to offer.</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">minimummaximum_promoter</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">ufunc</span><span class="p">),</span>
+<span class="w">        </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">op_dtypes</span><span class="p">[]),</span>
+<span class="w">        </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">signature</span><span class="p">[],</span>
+<span class="w">        </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="n">new_op_dtypes</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">PyArray_Descr</span><span class="w"> </span><span class="o">*</span><span class="n">double_descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyArray_DescrFromType</span><span class="p">(</span><span class="n">NPY_DOUBLE</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">double_descr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="n">double_dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NPY_DTYPE</span><span class="p">(</span><span class="n">double_descr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">signature</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">signature</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">double_dt</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Py_INCREF</span><span class="p">(</span><span class="n">dt</span><span class="p">);</span>
+<span class="w">        </span><span class="n">new_op_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dt</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">double_descr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">register_minimummaximum_promoter</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">minimummaximum</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* All-None tuple -&gt; catch-all fallback (a concrete loop always wins). */</span>
+<span class="w">    </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">none_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyTuple_Pack</span><span class="p">(</span>
+<span class="w">            </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">Py_None</span><span class="p">,</span><span class="w"> </span><span class="n">Py_None</span><span class="p">,</span><span class="w"> </span><span class="n">Py_None</span><span class="p">,</span><span class="w"> </span><span class="n">Py_None</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">none_tuple</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">promoter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyCapsule_New</span><span class="p">(</span>
+<span class="w">            </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">minimummaximum_promoter</span><span class="p">,</span>
+<span class="w">            </span><span class="s">&quot;numpy._ufunc_promoter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">promoter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">none_tuple</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyUFunc_AddPromoter</span><span class="p">(</span><span class="n">minimummaximum</span><span class="p">,</span><span class="w"> </span><span class="n">none_tuple</span><span class="p">,</span><span class="w"> </span><span class="n">promoter</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">none_tuple</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">promoter</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="n">PyMethodDef</span><span class="w"> </span><span class="n">MinMaxMethods</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">PyModuleDef</span><span class="w"> </span><span class="n">moduledef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">PyModuleDef_HEAD_INIT</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;minmax&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">MinMaxMethods</span><span class="p">,</span>
+<span class="w">    </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span>
+<span class="p">};</span>
+
+<span class="n">PyMODINIT_FUNC</span><span class="w"> </span><span class="nf">PyInit_minmax</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">import_array</span><span class="p">();</span>
+<span class="w">    </span><span class="n">import_umath</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyModule_Create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">moduledef</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* A 2-in/2-out ufunc. Its loops are registered separately below. */</span>
+<span class="w">    </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">minimummaximum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyUFunc_FromFuncAndData</span><span class="p">(</span>
+<span class="w">            </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">PyUFunc_None</span><span class="p">,</span>
+<span class="w">            </span><span class="s">&quot;minimummaximum&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;minimummaximum_docstring&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">minimummaximum</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">PyArray_Descr</span><span class="w"> </span><span class="o">*</span><span class="n">double_descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyArray_DescrFromType</span><span class="p">(</span><span class="n">NPY_DOUBLE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NPY_DTYPE</span><span class="p">(</span><span class="n">double_descr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">PyArray_DTypeMeta</span><span class="w"> </span><span class="o">*</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">dt</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">PyType_Slot</span><span class="w"> </span><span class="n">slots</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="n">NPY_METH_strided_loop</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">double_minimummaximum_loop</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="n">NPY_METH_get_reduction_loop</span><span class="p">,</span>
+<span class="w">         </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">minimummaximum_get_reduction_loop</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">},</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">PyArrayMethod_Spec</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double_minimummaximum&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">nin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">nout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">casting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NPY_NO_CASTING</span><span class="p">,</span>
+<span class="w">        </span><span class="cm">/* Needed for axis=None / multi-axis reductions. */</span>
+<span class="w">        </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NPY_METH_IS_REORDERABLE</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">dtypes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtypes</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">slots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slots</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyUFunc_AddLoopFromSpec</span><span class="p">(</span><span class="n">minimummaximum</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">spec</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">double_descr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">register_minimummaximum_promoter</span><span class="p">(</span><span class="n">minimummaximum</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">            </span><span class="o">||</span><span class="w"> </span><span class="n">PyModule_AddObject</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;minimummaximum&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">minimummaximum</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Py_XDECREF</span><span class="p">(</span><span class="n">minimummaximum</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>As with the ufuncs in the previous tutorial, the module needs to declare a
+dependency on NumPy to build:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+meson</label><div class="sd-tab-content docutils">
+<p>Sample <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">meson.build</span></code>.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;minmax&quot;</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1&quot;</span>
+
+<span class="k">[build-system]</span>
+<span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;meson-python&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span>
+<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;mesonpy&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-meson notranslate"><div class="highlight"><pre><span></span><span class="nb">project</span><span class="p">(</span><span class="s">&#39;minmax&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="n">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">import</span><span class="p">(</span><span class="s">&#39;python&#39;</span><span class="p">).</span><span class="n">find_installation</span><span class="p">()</span>
+<span class="n">np_dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">dependency</span><span class="p">(</span><span class="s">&#39;numpy&#39;</span><span class="p">)</span>
+
+<span class="n">sources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">files</span><span class="p">(</span><span class="s">&#39;minmax.c&#39;</span><span class="p">)</span>
+
+<span class="n">extension_module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">.</span><span class="n">extension_module</span><span class="p">(</span>
+<span class="w">  </span><span class="s">&#39;minmax&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">sources</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dependencies</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">np_dep</span><span class="p">],</span>
+<span class="w">  </span><span class="n">install</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+setuptools</label><div class="sd-tab-content docutils">
+<p>Sample <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;minmax&quot;</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1&quot;</span>
+
+<span class="k">[build-system]</span>
+<span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;setuptools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span>
+<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;setuptools.build_meta&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">Extension</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_include</span>
+
+<span class="n">minmax</span> <span class="o">=</span> <span class="n">Extension</span><span class="p">(</span><span class="s1">&#39;minmax&#39;</span><span class="p">,</span>
+                   <span class="n">sources</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;minmax.c&#39;</span><span class="p">],</span>
+                   <span class="n">include_dirs</span><span class="o">=</span><span class="p">[</span><span class="n">get_include</span><span class="p">()])</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;minmax&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">ext_modules</span><span class="o">=</span><span class="p">[</span><span class="n">minmax</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>After the above has been installed, it can be imported and used as follows.
+Plain Python floats and ints work directly, thanks to the promoter. No
+explicit <code class="docutils literal notranslate"><span class="pre">np.float64(...)</span></code> wrapping is needed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">minmax</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minmax</span><span class="o">.</span><span class="n">minimummaximum</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+<span class="go">(np.float64(3.0), np.float64(5.0))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minmax</span><span class="o">.</span><span class="n">minimummaximum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">(np.float64(3.0), np.float64(5.0))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minmax</span><span class="o">.</span><span class="n">minimummaximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">(np.float64(1.0), np.float64(9.0))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minmax</span><span class="o">.</span><span class="n">minimummaximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">(np.float64(1.0), np.float64(9.0))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minmax</span><span class="o">.</span><span class="n">minimummaximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(array([1., 2.]), array([4., 9.]))</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">minimummaximum.reduce</span></code> returns a tuple with one array per
+output, rather than a single array, so it is usually unpacked as
+<code class="docutils literal notranslate"><span class="pre">lo,</span> <span class="pre">hi</span> <span class="pre">=</span> <span class="pre">minimummaximum.reduce(a)</span></code>. The <code class="docutils literal notranslate"><span class="pre">initial</span></code> argument of a
+multi-output <code class="docutils literal notranslate"><span class="pre">reduce</span></code> accepts either a single scalar, which seeds every
+output, or a tuple with one value per output. The entries of such a tuple
+cannot be <code class="docutils literal notranslate"><span class="pre">None</span></code>; a plain <code class="docutils literal notranslate"><span class="pre">initial=None</span></code> still unsets the initial value
+for the whole reduction.</p>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<p>This example is intentionally minimal and leaves out several things a
+real-world implementation, like the built-in <a class="reference internal" href="../reference/generated/numpy.add.html#numpy.add" title="numpy.add"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.add</span></code></a> or a fuller
+<code class="docutils literal notranslate"><span class="pre">minimummaximum</span></code>, would normally have:</p>
+<ul>
+<li><p>The promoter always resolves to <code class="docutils literal notranslate"><span class="pre">'f8'</span></code>, regardless of the input dtypes.
+Integer input arrays are therefore silently cast to <code class="docutils literal notranslate"><span class="pre">float64</span></code> instead of
+keeping their own dtype. A multi-dtype ufunc would register a loop per
+dtype and pick the common one, as the built-in
+<a class="reference internal" href="../reference/generated/numpy.minimum.html#numpy.minimum" title="numpy.minimum"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.minimum</span></code></a>/<a class="reference internal" href="../reference/generated/numpy.maximum.html#numpy.maximum" title="numpy.maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.maximum</span></code></a> do.</p></li>
+<li><p>It registers no reduction identity. Reducing an empty array therefore
+raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>, the same as <code class="docutils literal notranslate"><span class="pre">numpy.maximum.reduce</span></code>. A
+multi-output ufunc can provide per-output identities with the
+<a class="reference internal" href="../reference/c-api/array.html#c.NPY_METH_get_multi_reduction_initials" title="NPY_METH_get_multi_reduction_initials"><code class="xref c c-macro docutils literal notranslate"><span class="pre">NPY_METH_get_multi_reduction_initials</span></code></a> slot, the multi-output
+version of <a class="reference internal" href="../reference/c-api/array.html#c.NPY_METH_get_reduction_initial" title="NPY_METH_get_reduction_initial"><code class="xref c c-macro docutils literal notranslate"><span class="pre">NPY_METH_get_reduction_initial</span></code></a>. Its function fills
+one initial value per output, for example <code class="docutils literal notranslate"><span class="pre">+inf</span></code> for the running minimum
+and <code class="docutils literal notranslate"><span class="pre">-inf</span></code> for the running maximum. Reducing an empty array, or reducing
+with a <code class="docutils literal notranslate"><span class="pre">where=</span></code> mask, then returns those identities instead of raising:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="nb">int</span>
+<span class="n">minimummaximum_get_multi_reduction_initials</span><span class="p">(</span>
+        <span class="n">PyArrayMethod_Context</span> <span class="o">*</span><span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+        <span class="n">npy_bool</span> <span class="n">NPY_UNUSED</span><span class="p">(</span><span class="n">reduction_is_empty</span><span class="p">),</span> <span class="n">void</span> <span class="o">**</span><span class="n">initials</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">double</span> <span class="o">*</span><span class="p">)</span><span class="n">initials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">NPY_INFINITY</span><span class="p">;</span>   <span class="o">/*</span> <span class="nb">min</span> <span class="n">identity</span> <span class="o">*/</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">double</span> <span class="o">*</span><span class="p">)</span><span class="n">initials</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">NPY_INFINITY</span><span class="p">;</span>  <span class="o">/*</span> <span class="nb">max</span> <span class="n">identity</span> <span class="o">*/</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It is registered alongside the reduction loop, by adding this entry to the
+<code class="docutils literal notranslate"><span class="pre">slots</span></code> array above:
+<code class="docutils literal notranslate"><span class="pre">{NPY_METH_get_multi_reduction_initials,</span> <span class="pre">(void</span> <span class="pre">*)&amp;minimummaximum_get_multi_reduction_initials}</span></code>.</p>
+</li>
+<li><p><a class="reference internal" href="../reference/generated/numpy.ufunc.accumulate.html#numpy.ufunc.accumulate" title="numpy.ufunc.accumulate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">accumulate</span></code></a>, <a class="reference internal" href="../reference/generated/numpy.ufunc.reduceat.html#numpy.ufunc.reduceat" title="numpy.ufunc.reduceat"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduceat</span></code></a>, and
+<a class="reference internal" href="../reference/generated/numpy.ufunc.at.html#numpy.ufunc.at" title="numpy.ufunc.at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">at</span></code></a> are not supported for multi-output ufuncs yet,
+only <a class="reference internal" href="../reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="numpy.ufunc.reduce"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce</span></code></a> is.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/c-api/array.html"><span class="doc">ArrayMethod API reference</span></a> for the full
+<a class="reference internal" href="../reference/c-api/array.html#c.NPY_METH_get_reduction_loop" title="NPY_METH_get_reduction_loop"><code class="xref c c-macro docutils literal notranslate"><span class="pre">NPY_METH_get_reduction_loop</span></code></a> reference documentation.</p></li>
+<li><p><a class="reference internal" href="basics.ufuncs.html#ufuncs-basics"><span class="std std-ref">Universal functions (ufunc) basics</span></a> for the Python-level behavior of
+<a class="reference internal" href="../reference/generated/numpy.ufunc.reduce.html#numpy.ufunc.reduce" title="numpy.ufunc.reduce"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce</span></code></a> on multi-output ufuncs.</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="c-info.ufunc-tutorial.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Writing your own ufunc</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="c-info.beyond-basics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Beyond the basics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background">Background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-a-two-output-minimummaximum-ufunc">Example: a two-output <code class="docutils literal notranslate"><span class="pre">minimummaximum</span></code> ufunc</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2008-2026, NumPy Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
